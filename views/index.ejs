@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <table>
+		<tbody>
+			<tr>
+				<th>商品货号</th>
+				<th>工厂编号</th>
+				<th>材质</th>
+				<th>库存</th>
+				<th>预警线</th>
+				<th>零售价</th>
+			</tr>
+			<tr>
+				<td><input type="text" name=""></td>
+				<td><input type="text" name=""></td>
+				<td><input type="text" name=""></td>
+				<td><input type="text" name=""></td>
+				<td><input type="text" name=""></td>
+				<td><input type="text" name=""></td>
+			</tr>
+			<tr>
+				<td><input type="text" name=""></td>
+				<td><input type="text" name=""></td>
+				<td><input type="text" name=""></td>
+				<td><input type="text" name=""></td>
+				<td><input type="text" name=""></td>
+				<td><input type="text" name=""></td>
+			</tr>
+			<tr>
+				<td><input type="text" name=""></td>
+				<td><input type="text" name=""></td>
+				<td><input type="text" name=""></td>
+				<td><input type="text" name=""></td>
+				<td><input type="text" name=""></td>
+				<td><input type="text" name=""></td>
+			</tr>
+		</tbody>
+	</table>
+	<script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+	<script type="text/javascript">
+		//表格多单元格复制，参数为jquery封装表格dom元素
+		$.fn.tablePaste = function() {
+		    $(this).bind('paste', function(e) {
+		        e.preventDefault(); //消除默认粘贴
+		        //获取粘贴板数据
+		        var data = null;  
+		        var clipboardData = window.clipboardData || e.originalEvent.clipboardData; // IE || chrome  
+		        data = clipboardData.getData('Text');
+		        //解析数据
+		        var arr = data.split('\n').filter(function(item) {    //兼容Excel行末\n，防止粘贴出多余空行
+		                    return (item !== "")
+		                }).map(function(item) {
+		                    return item. split("\t");
+		                });
+		        //输出至网页表格
+		        var tab = $(e.target).parents('table')[0];  //表格DOM
+		        var td = $(e.target).parents('td');
+		        var startRow = td.parents('tr')[0].rowIndex; //当前单元格行数 
+		        var startCell = td[0].cellIndex; //当前单元格列数
+		        var rows = tab.rows.length;  //总行数
+
+		        for (var i = 0; i < arr.length && startRow + i < rows; i++) {
+		            var cells = tab.rows[startRow + i].cells.length;  //该行总列数
+		            
+		            for(var j = 0; j < arr[i].length && startCell + j < cells; j++) {
+		                var cell = tab.rows[startRow + i].cells[startCell + j];
+		                $(cell).find(':text').val(arr[i][j].replace(/\s/,''));
+		            }
+		        }
+		    })
+		}
+		$('table').tablePaste();
+	</script>
+  </body>
+</html>
